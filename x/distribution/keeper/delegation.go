@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/cosmos/cosmos-sdk/x/distribution/types"
@@ -121,13 +123,12 @@ func (k Keeper) CalculateDelegationRewards(ctx sdk.Context, val stakingtypes.Val
 		marginOfErr := sdk.SmallestDec().MulInt64(3)
 		if stake.LTE(currentStake.Add(marginOfErr)) {
 			stake = currentStake
+		} else {
+			fmt.Printf("calculated final stake for delegator %s greater than current stake"+
+				"\n\tfinal stake:\t%s"+
+				"\n\tcurrent stake:\t%s",
+				del.GetDelegatorAddr(), stake, currentStake)
 		}
-		// else {
-		// 	fmt.Printf("calculated final stake for delegator %s greater than current stake"+
-		// 		"\n\tfinal stake:\t%s"+
-		// 		"\n\tcurrent stake:\t%s",
-		// 		del.GetDelegatorAddr(), stake, currentStake)
-		// }
 	}
 
 	// calculate rewards for final period
